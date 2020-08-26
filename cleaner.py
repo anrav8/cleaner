@@ -1,8 +1,13 @@
+import datetime
 import os, os.path, shutil
-outF = open('Log.txt', 'w')
 rmvfile = 'remove.txt'
 if os.path.exists(rmvfile) and os.path.isfile(rmvfile):
-    path = input("Please enter the path to root directory to start with clean-up:\n")
+    currentDT = datetime.datetime.now()
+    logname = "Log" + str(currentDT.year) + str(currentDT.month) + str(currentDT.day) + str(currentDT.hour) + str(currentDT.minute)+str(currentDT.second)+".txt"
+    outF = open(logname, 'w+')
+    path = input("Please enter the path to directory to start with clean up:\n")
+    logmsg = "Cleaning up directory " + path+ ":\n"
+    outF.write(logmsg)
     with open(rmvfile) as (fp):
         line = fp.readline()
         cnt = 1
@@ -11,8 +16,8 @@ if os.path.exists(rmvfile) and os.path.isfile(rmvfile):
                 if os.path.exists(path + line.strip()):
                     if os.path.isfile(path + line.strip()):
                         os.remove(path + line.strip())
-                        print("File", line.strip(), "has been removed")
-                        logmsg = "File " + line.strip() + " has been removed\n"
+                        print("File ", line.strip(), "has been removed")
+                        logmsg = "File " + line.strip()  + " has been removed\n"
                         outF.write(logmsg)
                     if os.path.isdir(path + line.strip()):
                         files=os.listdir(path+line.strip())
@@ -22,7 +27,7 @@ if os.path.exists(rmvfile) and os.path.isfile(rmvfile):
                             logmsg = "Directory " + line.strip() + " has been removed\n"
                             outF.write(logmsg)
                         else:
-                            askmsg = "Directory" + path + line.strip() + "is not empty. Please confirm removal of directory along with entire subtree (Y/N) "
+                            askmsg = "Directory " + path + line.strip() + " is not empty. Please confirm removal of directory along with entire subtree (Y/N) "
                             flag=0
                             while flag < 1:
                                 confirm = input(askmsg)
@@ -33,8 +38,8 @@ if os.path.exists(rmvfile) and os.path.isfile(rmvfile):
                                     outF.write(logmsg)
                                     flag = 1
                                 if confirm == "N" or confirm == "n":
-                                    print("Directory", line.strip(), "has not been removed by user confirmation")
-                                    logmsg = "Directory " + line.strip() + " has not been removed by user confirmation\n"
+                                    print("Directory", line.strip(), "has not been removed (User denial)")
+                                    logmsg = "Directory " + line.strip() + " has not been removed (User denial)\n"
                                     outF.write(logmsg)
                                     flag=1
                                 if confirm!="N" and confirm!="n" and confirm!="Y" and confirm!="y":
@@ -43,8 +48,11 @@ if os.path.exists(rmvfile) and os.path.isfile(rmvfile):
                     print(line.strip(), "does not exist")
                     logmsg = line.strip() + " does not exist\n"
                     outF.write(logmsg)
-            else:
-                print(path, line.strip(), "is empty entry in remove file")
             line = fp.readline()
             cnt += 1
-outF.close()
+    outF.close()
+else:
+    print(rmvfile, "does not exist in your cleaner utility directory")
+input()
+
+
